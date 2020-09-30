@@ -1,9 +1,16 @@
 import json
+import os
 
-def fileImport():
+
+def getDimension() -> (int, int):
+    global mapWide, mapHigh
+    return mapWide, mapHigh
+
+
+def fileImport(path: str):
     global worldData
 
-    with open("World.txt", "r") as file:
+    with open(path, "r") as file:
         worldData = json.load(file)
 
 
@@ -19,25 +26,30 @@ def rawToTile():
     global worldData, rawMap, mapWide, mapHigh, tileMap
 
     tileMap = [[] for x in range(mapHigh)]
-    print(tileMap)
     counter = 0
 
     for tileType, tileCounts in zip(rawMap[::2], rawMap[1::2]):
-        print(tileType, tileCounts)
         for i in range(tileCounts):
             tileMap[int(counter / mapWide)].append(tileType)
             counter += 1
-    
+
+
+def getTileMap():
+    global tileMap
+    return tileMap
 
 
 def tileToRaw():
     pass
 
+
 def rawToFile():
-    pass
+    pass 
+
 
 def fileExport():
     pass
+
 
 def printTileMapToTxt():
     global tileMap
@@ -48,10 +60,14 @@ def printTileMapToTxt():
             file.write("\n")
 
 
-mapTileNumber = {1:"grass", 2:"sand"}
+def worldTxtLoad(path: str):
+    global tileMap
 
-if __name__ == "__main__":
-    fileImport()
+    fileImport(path)
     fileToRaw()
     rawToTile()
-    printTileMapToTxt()
+    return tileMap
+
+
+def exportSaveAs(path: str) -> None:
+    pass

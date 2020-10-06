@@ -1,6 +1,7 @@
 import sys
 import math
 import pygame as pg
+import PySimpleGUI as sg
 from settings import *
 from World import World
 from Toolbar import Toolbar
@@ -11,6 +12,7 @@ class Map:
     def __init__(self, setWorld):
         self.world = setWorld
         self.TILESIZE = WINDOW_WIDTH // self.world.wide
+        self.toolbar = Toolbar()
 
         pg.init()
         self.screen = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -27,14 +29,18 @@ class Map:
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
+        self.clicking = False
+
+        self.drawMap()
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
             self.update()
             self.draw()
-
+            
 
     def quit(self):
+        self.toolbar.quit()
         pg.quit()
         exportMain(self.world)
     
@@ -70,22 +76,35 @@ class Map:
 
 
     def brush(self, x, y):
-        brushSize = 10
-        for i in range(0 - brushSize // 2, brushSize // 2):
-            for j in range(0 - brushSize // 2, brushSize // 2):
-                if math.sqrt(i ** 2 + j ** 2) < (brushSize // 2) and 0 <= x + i < len(self.world.tile2DMap[0]) and 0 <= y + j < len(self.world.tile2DMap):
+        for i in range(0 - self.brushSize // 2, self.brushSize // 2):
+            for j in range(0 - self.brushSize // 2, self.brushSize // 2):
+                if math.sqrt(i ** 2 + j ** 2) < (self.brushSize // 2) and 0 <= x + i < len(self.world.tile2DMap[0]) and 0 <= y + j < len(self.world.tile2DMap):
                     self.world.tile2DMap[y + j][x + i] = 10
-        self.drawMap()
+                    pygame.draw.rect(self.screen, pygame.Color("#FEF82D"), [(x + i) * self.TILESIZE, (y + j) * self.TILESIZE, self.TILESIZE, self.TILESIZE])
 
 
     def draw(self):
-        #self.screen.fill(BGCOLOR)
         self.draw_grid()
+        #update the canvas
         pg.display.flip()
 
 
     def events(self):
+        event, values = self.toolbar.toolbarWindow.read(timeout=10)
+        self.brushSize = int(values["-brushSize-"]) * 2
+        if event == sg.WIN_CLOSED:
+            self.quit()
+
         # catch all events here
+        mx, my = pygame.mouse.get_pos()
+
+        if self.clicking:
+            print(mx // self.TILESIZE, my // self.TILESIZE)
+            xPos = mx // self.TILESIZE
+            yPos = my // self.TILESIZE
+            self.brush(xPos, yPos)
+
+        # event checking
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit()
@@ -93,12 +112,11 @@ class Map:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed()[0]:
-                    xPos, yPos = pygame.mouse.get_pos()
-                    print(xPos // self.TILESIZE, yPos // self.TILESIZE)
-                    xPos = xPos // self.TILESIZE
-                    yPos = yPos // self.TILESIZE
-                    self.brush(xPos, yPos)
+                if event.button == 1:
+                    self.clicking = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    self.clicking = False
 
 
 def launchMap(worldPath: str) -> None:

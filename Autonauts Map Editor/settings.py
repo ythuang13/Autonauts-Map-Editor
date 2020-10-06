@@ -23,7 +23,7 @@ TILES_TYPE_DICT = {0: pygame.Color("#81D800"), # grass
 
 # game settings
 ENLARGE = TILESIZE = 3
-FPS = 30
+FPS = 60
 WINDOW_WIDTH = 1680
 WINDOW_HEIGHT = 960
 TITLE = "Autonauts Map Editor"

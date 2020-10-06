@@ -1,16 +1,19 @@
 import sys
+import math
 import pygame as pg
 from settings import *
-import AmeGui as ag
+from World import World
+from Toolbar import Toolbar
+from AmeExport import exportMain
+
 
 class Map:
-    def __init__(self, tileMap):
-        self.tileMap = tileMap
-        self.WIDTH = len(tileMap[0]) * ENLARGE
-        self.HEIGHT = len(tileMap) * ENLARGE
+    def __init__(self, setWorld):
+        self.world = setWorld
+        self.TILESIZE = WINDOW_WIDTH // self.world.wide
 
         pg.init()
-        self.screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
+        self.screen = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100) # TODO
@@ -33,6 +36,7 @@ class Map:
 
     def quit(self):
         pg.quit()
+        exportMain(self.world)
     
 
     def colorPicker(self, num):
@@ -44,32 +48,34 @@ class Map:
     
     def drawMap(self):
         currentTile, lastTile = 0, -1
-        for y in range(len(self.tileMap[0])):
-            for x in range(len(self.tileMap)):
-                currentTile = self.tileMap[x][y]
+        for y in range(self.world.wide):
+            for x in range(self.world.high):
+                currentTile = self.world.tile2DMap[x][y]
                 if currentTile != lastTile:
-                    tileColor = self.colorPicker(self.tileMap[x][y])
-                lastTile = self.tileMap[x][y]
-                pygame.draw.rect(self.screen, tileColor, [y * TILESIZE, x * TILESIZE, TILESIZE, TILESIZE])
+                    tileColor = self.colorPicker(self.world.tile2DMap[x][y])
+                lastTile = self.world.tile2DMap[x][y]
+                pygame.draw.rect(self.screen, tileColor, [y * self.TILESIZE, x * self.TILESIZE, self.TILESIZE, self.TILESIZE])
 
 
     def update(self):
-        self.drawMap()
+        #self.drawMap()
+        pass
 
 
     def draw_grid(self):
-        for x in range(0, self.WIDTH, TILESIZE):
-            pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, self.HEIGHT))
-        for y in range(0, self.HEIGHT, TILESIZE):
-            pg.draw.line(self.screen, LIGHTGREY, (0, y), (self.WIDTH, y))
+        for x in range(0, WINDOW_WIDTH, self.TILESIZE):
+            pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, WINDOW_HEIGHT))
+        for y in range(0, WINDOW_HEIGHT, self.TILESIZE):
+            pg.draw.line(self.screen, LIGHTGREY, (0, y), (WINDOW_WIDTH, y))
+
 
     def brush(self, x, y):
         brushSize = 10
         for i in range(0 - brushSize // 2, brushSize // 2):
             for j in range(0 - brushSize // 2, brushSize // 2):
-                if x + i >= 0 and x + i < (self.WIDTH / TILESIZE) and y + j >= 0 and x + j < (self.HEIGHT / TILESIZE):
-                    self.tileMap[y + j][x + i] = 10
-
+                if math.sqrt(i ** 2 + j ** 2) < (brushSize // 2) and 0 <= x + i < len(self.world.tile2DMap[0]) and 0 <= y + j < len(self.world.tile2DMap):
+                    self.world.tile2DMap[y + j][x + i] = 10
+        self.drawMap()
 
 
     def draw(self):
@@ -89,13 +95,17 @@ class Map:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
                     xPos, yPos = pygame.mouse.get_pos()
-                    print(xPos // TILESIZE, yPos // TILESIZE)
-                    xPos = xPos // TILESIZE
-                    yPos = yPos // TILESIZE
+                    print(xPos // self.TILESIZE, yPos // self.TILESIZE)
+                    xPos = xPos // self.TILESIZE
+                    yPos = yPos // self.TILESIZE
                     self.brush(xPos, yPos)
 
 
-def launchMap(tileMap):
-    ameMap = Map(tileMap)
+def launchMap(worldPath: str) -> None:
+    # initialized world
+    world = World(worldPath)
+    
+    # launch map
+    ameMap = Map(world)
     while True:
         ameMap.run()

@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>7df86ca4-78ea-4fbb-95db-95a9f8e276fc</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>AmeGui.py</StartupFile>
+    <StartupFile>AmeImport.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,14 +21,22 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AmeExport.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AmeImport.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="AmeMap.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AmeGui.py">
+    <Compile Include="settings.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AmeFunctions.py" />
-    <Compile Include="settings.py">
+    <Compile Include="Toolbar.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="World.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

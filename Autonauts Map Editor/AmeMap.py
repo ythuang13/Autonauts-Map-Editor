@@ -79,8 +79,8 @@ class Map:
         for i in range(0 - self.brushSize // 2, self.brushSize // 2):
             for j in range(0 - self.brushSize // 2, self.brushSize // 2):
                 if math.sqrt(i ** 2 + j ** 2) < (self.brushSize // 2) and 0 <= x + i < len(self.world.tile2DMap[0]) and 0 <= y + j < len(self.world.tile2DMap):
-                    self.world.tile2DMap[y + j][x + i] = 10
-                    pygame.draw.rect(self.screen, pygame.Color("#FEF82D"), [(x + i) * self.TILESIZE, (y + j) * self.TILESIZE, self.TILESIZE, self.TILESIZE])
+                    self.world.tile2DMap[y + j][x + i] = self.tileTypeValue
+                    pygame.draw.rect(self.screen, self.colorPicker(self.tileTypeValue), [(x + i) * self.TILESIZE, (y + j) * self.TILESIZE, self.TILESIZE, self.TILESIZE])
 
 
     def draw(self):
@@ -92,6 +92,7 @@ class Map:
     def events(self):
         event, values = self.toolbar.toolbarWindow.read(timeout=10)
         self.brushSize = int(values["-brushSize-"]) * 2
+        self.tileTypeValue = int(values["-tileTypeSelect-"][0:2])
         if event == sg.WIN_CLOSED:
             self.quit()
 

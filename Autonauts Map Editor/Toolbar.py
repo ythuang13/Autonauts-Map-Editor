@@ -19,7 +19,7 @@ class Toolbar:
 
 
     def colorLayoutSetup(self) -> list:
-        temp = [[sg.OptionMenu(["green", "yellow", "brown"], default_value="green")],
+        temp = [[sg.Combo(["0 grass", "1 dirt", "6 coast", "7 ocean", "8 lake", "9 shallow water", "10 sand", "12 swamp", "14 metal ore", "19 clay"], default_value="0 grass", key="-tileTypeSelect-")],
                 ]
         return temp
 

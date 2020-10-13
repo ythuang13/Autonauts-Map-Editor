@@ -7,14 +7,14 @@ from AmeMap import launchMap
 def main():
     sg.theme("BlueMono")
 
-    layout = [[sg.Text("Autonaunts Map Import")],
+    layout = [[sg.Text("Autonauts Map Import")],
               [sg.InputText("Import file path, world saves are named World.txt", disabled=True, key="-IN-"),
                sg.FileBrowse("import", file_types=(("Word.txt", "*.txt"),),
                              initial_folder = str(Path.home()) + r"\AppData\LocalLow\Denki Ltd\Autonauts\Saves"),
                sg.Button("load")]
              ]
 
-    importWindow = sg.Window("Autonaunts Map Editor - import", layout)
+    importWindow = sg.Window("Autonauts Map Editor - import", layout)
 
     
     while True:

@@ -5,12 +5,12 @@ import PySimpleGUI as sg
 def exportMain(world):
     sg.theme ("BlueMono")
 
-    layout = [[sg.Text("Autonaunts Map Export")],
+    layout = [[sg.Text("Autonauts Map Export")],
               [sg.InputText("Select folder path to save as", disabled=True, key="-OUT-"),
                sg.FolderBrowse("path", initial_folder = str(Path.home()) + r"\AppData\LocalLow\Denki Ltd\Autonauts\Saves"), sg.Button("save as")]
              ]
 
-    exportWindow = sg.Window("Autonaunts Map Editor - export", layout)
+    exportWindow = sg.Window("Autonauts Map Editor - export", layout)
     
     while True:
         event, values = exportWindow.read()

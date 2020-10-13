@@ -90,6 +90,7 @@ class Map:
 
 
     def events(self):
+        # events for toolbar
         event, values = self.toolbar.toolbarWindow.read(timeout=10)
         self.brushSize = int(values["-brushSize-"]) * 2
         self.tileTypeValue = int(values["-tileTypeSelect-"][0:2])

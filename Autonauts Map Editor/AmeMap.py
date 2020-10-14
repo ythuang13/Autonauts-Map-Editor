@@ -2,6 +2,8 @@ import sys
 import math
 import pygame as pg
 import PySimpleGUI as sg
+from pathlib import Path
+from datetime import datetime as dt
 from settings import *
 from World import World
 from Toolbar import Toolbar
@@ -92,10 +94,20 @@ class Map:
     def events(self):
         # events for toolbar
         event, values = self.toolbar.toolbarWindow.read(timeout=10)
-        self.brushSize = int(values["-brushSize-"]) * 2
-        self.tileTypeValue = int(values["-tileTypeSelect-"][0:2])
+        
         if event == sg.WIN_CLOSED:
             self.quit()
+        elif event == "-reset-":
+            self.world.tile2DMap = self.world.original
+            self.drawMap()
+        elif event == "-exit-":
+            self.quit()
+        elif event == "-screenshot-":
+            self.screenshot()
+
+        # take data from toolbar
+        self.brushSize = int(values["-brushSize-"]) * 2
+        self.tileTypeValue = int(values["-tileTypeSelect-"][0:2])
 
         # catch all events here
         mx, my = pygame.mouse.get_pos()
@@ -108,17 +120,30 @@ class Map:
 
         # event checking
         for event in pg.event.get():
+            # exit
             if event.type == pg.QUIT:
                 self.quit()
+
+            # keyboard
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
+                if event.key == pg.K_F12:
+                    self.screenshot()
+
+            # mouse
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.clicking = True
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     self.clicking = False
+
+    # take screenshot
+    def screenshot(self):
+        now = dt.now()
+        formattedTime = now.strftime("%Y-%m-%d_%I.%M.%S")
+        pygame.image.save(self.screen, str(Path.home()) + r"\Desktop\\" + formattedTime + ".png")
 
 
 def launchMap(worldPath: str) -> None:

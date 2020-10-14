@@ -12,8 +12,8 @@ class Toolbar:
 
 
     def toolbarLayoutSetup(self) -> list:
-        temp = [[sg.Button("brush"), sg.Button("exit/save"), sg.Button("Screenshot")],
-                [sg.Slider(range=(1, 10), default_value=2, orientation="h", k="-brushSize-", relief="raised"), sg.Button("clear map")]
+        temp = [[sg.Button("brush"), sg.Button("exit/save", tooltip="exit and save option", k="-exit-"), sg.Button("Screenshot(F12)", tooltip="save a screenshot to your desktop", k="-screenshot-")],
+                [sg.Slider(range=(1, 10), default_value=2, orientation="h", k="-brushSize-", relief="raised"), sg.Button("reset", tooltip="reset back to original", k="-reset-")]
                 ]
         return temp
 

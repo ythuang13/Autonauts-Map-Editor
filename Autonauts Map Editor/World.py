@@ -1,4 +1,5 @@
 import json
+import copy
 
 
 class World:
@@ -6,6 +7,7 @@ class World:
     def __init__(self, worldPath):
         self.path = worldPath
         self.tile2DMap = self.loadWorld()
+        self.original = copy.deepcopy(self.tile2DMap)
 
     def loadWorld(self):
         
